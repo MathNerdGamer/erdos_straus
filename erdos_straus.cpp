@@ -15,7 +15,7 @@
 using namespace std::chrono;
 
 // Utility
-std::vector<std::int32_t> primes;
+std::vector<std::uint32_t> primes;
 void build_primes( std::string const &, std::uint64_t );
 auto timer( steady_clock::time_point const &,
             steady_clock::time_point const & ) -> std::string;
@@ -147,14 +147,14 @@ void build_primes( std::string const &file_name, std::uint64_t num_primes )
     std::ifstream in_file{ file_name, std::ios::binary };
 
     in_file.seekg( 0, std::ios::end );
-    std::uint64_t const prime_count{ in_file.tellg() / sizeof( std::int32_t ) };
+    std::uint64_t const prime_count{ in_file.tellg() / sizeof( std::uint32_t ) };
 
     num_primes = std::min( prime_count, num_primes );
 
     primes.resize( num_primes );
     in_file.seekg(0, std::ios::beg);
 
-    in_file.read( reinterpret_cast<char *>( primes.data() ), num_primes * sizeof( std::int32_t ) );
+    in_file.read( reinterpret_cast<char *>( primes.data() ), num_primes * sizeof( std::uint32_t ) );
 }
 
 auto timer( steady_clock::time_point const &start,
@@ -259,8 +259,8 @@ auto special_cases( NTL::ZZ const &N )
         {
             std::cout << "Special Case: 5 (mod 8).\n";
             std::cout << "4/" << N << " = 1/" << ( N + 3 ) / 4
-                << " + 1/" << N * ( ( N + 3 ) / 8 )
-                << " + 1/" << N * ( ( N + 3 ) / 4 ) << ".\n";
+                                   << " + 1/" << N * ( ( N + 3 ) / 8 )
+                                   << " + 1/" << N * ( ( N + 3 ) / 4 ) << ".\n";
         }
 
         return true;
@@ -276,8 +276,8 @@ auto special_cases( NTL::ZZ const &N )
             {
                 std::cout << "Special Case: Divisible by 3.\n";
                 std::cout << "4/" << N << " = 1/" << N / 3
-                    << " + 1/" << 2 * N
-                    << " + 1/" << 2 * N << ".\n";
+                                       << " + 1/" << 2 * N
+                                       << " + 1/" << 2 * N << ".\n";
             }
 
             return true;
@@ -291,8 +291,8 @@ auto special_cases( NTL::ZZ const &N )
             {
                 std::cout << "Special Case: 2 (mod 3).\n";
                 std::cout << "4/" << N << " = 1/" << ( N + 1 ) / 3
-                    << " + 1/" << N
-                    << " + 1/" << N * ( N + 1 ) / 3 << ".\n";
+                                       << " + 1/" << N
+                                       << " + 1/" << N * ( N + 1 ) / 3 << ".\n";
             }
 
             return true;
@@ -309,8 +309,8 @@ auto special_cases( NTL::ZZ const &N )
             {
                 std::cout << "Special Case: Divisible by 7.\n";
                 std::cout << "4/" << N << " = 1/" << 2 * ( N / 7 )
-                    << " + 1/" << 28 * ( N / 7 )
-                    << " + 1/" << 28 * ( N / 7 ) << ".\n";
+                                       << " + 1/" << 28 * ( N / 7 )
+                                       << " + 1/" << 28 * ( N / 7 ) << ".\n";
             }
 
             return true;
@@ -324,8 +324,8 @@ auto special_cases( NTL::ZZ const &N )
             {
                 std::cout << "Special Case: 3 (mod 7).\n";
                 std::cout << "4/" << N << " = 1/" << ( 2 * N + 1 ) / 7
-                    << " + 1/" << 2 * N
-                    << " + 1/" << N * ( 2 * N + 1 ) / 7 << ".\n";
+                                       << " + 1/" << 2 * N
+                                       << " + 1/" << N * ( 2 * N + 1 ) / 7 << ".\n";
             }
 
             return true;
@@ -339,8 +339,8 @@ auto special_cases( NTL::ZZ const &N )
             {
                 std::cout << "Special Case: 5 (mod 7).\n";
                 std::cout << "4/" << N << " = 1/" << 2 * ( N + 2 ) / 7
-                    << " + 1/" << 2 * N
-                    << " + 1/" << N * ( N + 2 ) / 7 << ".\n";
+                                       << " + 1/" << 2 * N
+                                       << " + 1/" << N * ( N + 2 ) / 7 << ".\n";
             }
 
             return true;
@@ -354,8 +354,8 @@ auto special_cases( NTL::ZZ const &N )
             {
                 std::cout << "Special Case: 6 (mod 7).\n";
                 std::cout << "4/" << N << " = 1/" << 2 * ( N + 1 ) / 7
-                    << " + 1/" << 2 * N
-                    << " + 1/" << 2 * N * ( N + 1 ) / 7 << ".\n";
+                                       << " + 1/" << 2 * N
+                                       << " + 1/" << 2 * N * ( N + 1 ) / 7 << ".\n";
             }
 
             return true;
