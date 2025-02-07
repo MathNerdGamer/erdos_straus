@@ -15,8 +15,8 @@
 using namespace std::chrono;
 
 // Utility
-std::vector<NTL::ZZ> primes;
-void build_primes( std::string const &, int );
+std::vector<std::int32_t> primes;
+void build_primes( std::string const &, std::uint64_t );
 auto timer( steady_clock::time_point const &,
             steady_clock::time_point const & ) -> std::string;
 
@@ -71,7 +71,7 @@ auto main( int argc, char **argv ) -> int
     {
         std::cout << "Building vector of primes.\n";
         auto const build_start{ high_resolution_clock::now() };
-        build_primes( "primes.txt", NTL::conv<int>( N ) );
+        build_primes( "primes.bin", NTL::conv<unsigned>( N ) );
         auto const build_end{ high_resolution_clock::now() };
         std::cout << "Prime vector of size " << primes.size() << " took "
                   << timer( build_start, build_end ) << " to build.\n";
@@ -88,7 +88,8 @@ auto main( int argc, char **argv ) -> int
 
     if constexpr( PRIMES )
     {
-        std::for_each( std::begin( primes ), std::end( primes ), erdos_straus );
+        std::for_each( std::begin( primes ), std::end( primes ),
+                       []( std::int32_t n ) { erdos_straus( NTL::ZZ{ n } ); } );
     }
     else if constexpr( SINGLE )
     {
@@ -141,25 +142,19 @@ auto main( int argc, char **argv ) -> int
 }
 
 // Utility Functions
-void build_primes( std::string const &file_name, int num_primes )
+void build_primes( std::string const &file_name, std::uint64_t num_primes )
 {   // Builds a vector of primes from a text file.
-    std::ifstream in_file{ file_name };
+    std::ifstream in_file{ file_name, std::ios::binary };
 
-    auto n_primes{ 0 };
+    in_file.seekg( 0, std::ios::end );
+    std::uint64_t const prime_count{ in_file.tellg() / sizeof( std::int32_t ) };
 
-    primes.reserve( std::min( n_primes, 50000000 ) );
+    num_primes = std::min( prime_count, num_primes );
 
-    for( std::string line; std::getline( in_file, line ) && ( n_primes < num_primes || num_primes == 0 ); )
-    {
-        std::istringstream stream{ line };
+    primes.resize( num_primes );
+    in_file.seekg(0, std::ios::beg);
 
-        for( int32_t prime; stream >> prime; )
-        {
-            primes.push_back( NTL::ZZ{ prime } );
-        }
-
-        ++n_primes;
-    }
+    in_file.read( reinterpret_cast<char *>( primes.data() ), num_primes * sizeof( std::int32_t ) );
 }
 
 auto timer( steady_clock::time_point const &start,
