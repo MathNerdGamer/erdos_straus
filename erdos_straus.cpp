@@ -88,8 +88,18 @@ auto main( int argc, char **argv ) -> int
 
     if constexpr( PRIMES )
     {
+        int million = 0;
         std::for_each( std::begin( primes ), std::end( primes ),
-                       []( std::int32_t n ) { erdos_straus( NTL::ZZ{ n } ); } );
+                       [&million]( std::int32_t n )
+                       {
+                           int new_million = (n / 1000000);
+                           if( new_million > million )
+                           {
+                               million = new_million;
+                               std::cout << n << "\n";
+                           }
+                           erdos_straus( NTL::ZZ{ n } );
+                       } );
     }
     else if constexpr( SINGLE )
     {
@@ -134,7 +144,7 @@ auto main( int argc, char **argv ) -> int
 
         std::cout << "Total number of special cases: " << total << ".\n";
         std::cout << "Total number of " << type << " which had to run through the main algorithm: "
-                                                << N - total << ".\n";
+                                                << N - 1 - total << ".\n";
         std::cout << "Total number which used the fallback: " << special[FALLBACK] << ".\n";
     }
 
@@ -576,6 +586,10 @@ void erdos_straus( NTL::ZZ const &N )
 void erdos_straus_fallback( NTL::ZZ const &N )
 {   // Finding x,y,z such that 4/N = 1/x + 1/y + 1/z
     ++special[FALLBACK];
+
+    std::cout << "Entered fallback at N = " << N << ".\n";
+    return;
+
     auto const x_min{ ( N + 3 ) / 4 };
     // ceil(N/4) = floor((N+3) / 4)
     auto const x_max{ ( 3 * N ) / 4 };
