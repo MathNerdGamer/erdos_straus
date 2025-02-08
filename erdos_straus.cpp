@@ -47,8 +47,8 @@ enum
 };
 
 // Config
-constexpr bool VERBOSE{ false };
-constexpr bool SINGLE{ false };
+constexpr bool VERBOSE{ true };
+constexpr bool SINGLE{ true };
 constexpr bool PRIMES{ false };
 
 auto main( int argc, char **argv ) -> int
