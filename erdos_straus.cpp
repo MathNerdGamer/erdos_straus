@@ -47,8 +47,8 @@ enum
 };
 
 // Config
-constexpr bool VERBOSE{ true };
-constexpr bool SINGLE{ true };
+constexpr bool VERBOSE{ false };
+constexpr bool SINGLE{ false };
 constexpr bool PRIMES{ false };
 
 auto main( int argc, char **argv ) -> int
@@ -88,7 +88,6 @@ auto main( int argc, char **argv ) -> int
 
     if constexpr( PRIMES )
     {
-        int million = 0;
         std::for_each( std::begin( primes ), std::end( primes ),
                        [](std::int32_t n) { erdos_straus( NTL::ZZ{ n } ); } );
     }
@@ -456,23 +455,16 @@ auto generate_continuants( std::vector<std::int64_t> const &continued_fraction )
 {   // We only need the denominators for our purposes.
     std::vector<NTL::ZZ> continuants;
 
-    NTL::ZZ A_prev{ 0 }, A_curr{ 1 }, // A[-1] = 0, A[0] = 1
-            B_prev{ 1 }, B_curr{ 0 }; // B[-1] = 1, B[0] = 0
+    NTL::ZZ B_prev{ 1 }, B_curr{ 0 }; // B[-1] = 1, B[0] = 0
 
     for( int coefficient : continued_fraction )
-    {   // A[k + 1] = a[k + 1] * A[k] + A[k - 1]
-        NTL::ZZ A_next = A_prev + NTL::ZZ{ coefficient } *A_curr;
+    {   // B[k + 1] = a[k + 1] * B[k] + B[k - 1]
+        NTL::ZZ B_next = B_prev + NTL::ZZ{ coefficient } * B_curr;
 
-        // B[k + 1] = a[k + 1] * B[k] + B[k - 1]
-        NTL::ZZ B_next = B_prev + NTL::ZZ{ coefficient } *B_curr;
-
-        // x[k] = A[k] / B[k]
-        // Save the denominator
+        // Save the denominator continuant
         continuants.emplace_back( B_next );
 
         // k -> k+1
-        A_prev = A_curr;
-        A_curr = A_next;
         B_prev = B_curr;
         B_curr = B_next;
     }
@@ -578,9 +570,6 @@ void erdos_straus( NTL::ZZ const &N )
 void erdos_straus_fallback( NTL::ZZ const &N )
 {   // Finding x,y,z such that 4/N = 1/x + 1/y + 1/z
     ++special[FALLBACK];
-
-    std::cout << "Entered fallback at N = " << N << ".\n";
-    return;
 
     auto const x_min{ ( N + 3 ) / 4 };
     // ceil(N/4) = floor((N+3) / 4)
