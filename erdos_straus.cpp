@@ -90,16 +90,7 @@ auto main( int argc, char **argv ) -> int
     {
         int million = 0;
         std::for_each( std::begin( primes ), std::end( primes ),
-                       [&million]( std::int32_t n )
-                       {
-                           int new_million = (n / 1000000);
-                           if( new_million > million )
-                           {
-                               million = new_million;
-                               std::cout << n << "\n";
-                           }
-                           erdos_straus( NTL::ZZ{ n } );
-                       } );
+                       [](std::int32_t n) { erdos_straus( NTL::ZZ{ n } ); } );
     }
     else if constexpr( SINGLE )
     {
@@ -132,6 +123,7 @@ auto main( int argc, char **argv ) -> int
         std::cout << "Total number = 6 (mod 7): " << special[SIX_MOD7]   << ".\n";
         std::cout << "Total number = 0 (mod 5): " << special[ZERO_MOD5]  << ".\n";
         std::cout << "Total number = 1 (mod 5): " << special[ONE_MOD5]   << ".\n";
+        std::cout << "Total number = 2 (mod 5): " << special[TWO_MOD5] << ".\n";
         std::cout << "Total number = 3 (mod 5): " << special[THREE_MOD5] << ".\n";
 
         auto total{ std::accumulate( std::begin( special ), std::end( special ), 0 ) - special[FALLBACK] };
